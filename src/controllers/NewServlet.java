@@ -1,16 +1,15 @@
 package controllers;
 
 import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.sql.Timestamp;
-import javax.persistence.EntityManager;
 import models.Task;
-import utils.DBUtil;
 
 /**
  * Servlet implementation class NewServlet
@@ -31,28 +30,12 @@ public class NewServlet extends HttpServlet {
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EntityManager em = DBUtil.createEntityManager();
-        em.getTransaction().begin();
+        request.setAttribute("_token", request.getSession().getId());
 
-        //Taskのインスタンスを作成
-        Task m = new Task();
+        request.setAttribute("task", new Task());
 
-        //mの各フィールドにデータを代入
-        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
-        m.setCreated_at(currentTime);
-        m.setUpdated_at(currentTime);
-
-        String content = "買い物";
-        m.setContent(content);
-
-        //データベースに保存
-        em.persist(m);
-        em.getTransaction().commit();
-
-        //自動採番されたIDの値を表示
-        response.getWriter().append(Integer.valueOf(m.getId()).toString());
-
-        em.close();
+        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/new.jsp");
+        rd.forward(request, response);
     }
 
 }
