@@ -1,5 +1,8 @@
 package models;
 
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -10,6 +13,12 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
+@NamedQueries({
+    @NamedQuery(
+        name = "getAllTasks",
+        query = "SELECT m FROM Task AS m ORDER BY m.id DESC"
+        )
+})
 @Table(name = "tasks")
 public class Task {
     @Id
